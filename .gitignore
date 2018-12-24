@@ -6,3 +6,14 @@
 circularBuffer
 
 Application
+/Debug/
+
+TestSite_converter\.log
+
+\.settings/
+
+\.project
+
+\.cproject
+
+\.metadata/
