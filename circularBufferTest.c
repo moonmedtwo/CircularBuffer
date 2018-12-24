@@ -1,14 +1,53 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "circularBuffer.h"
 
-#define ESCAPE_CHARACTER (0x1B)
+circular_buffer_t Buffer
+;
+#define PARSING_DEFAULT							0
+#define PARSING_HASHMAP							1
 
-circular_buffer_t Buffer;
+#define ESCAPE_CHARACTER_PARSING_METHOD 		PARSING_HASHMAP
+
+#if (ESCAPE_CHARACTER_PARSING_METHOD == PARSING_DEFAULT)
+char cEscapeLetters[] = {'E','e'};
+#elif (ESCAPE_CHARACTER_PARSING_METHOD == PARSING_HASHMAP)
+bool bEscapeLetters[] = { 	false, // A, a
+							false, // B, b
+							false, // C, c
+							false, // D, d
+							true, // E, e
+							false, // F, f
+							false, // G, g
+							false, // H, h
+							false, // I, i
+							false, // J, j
+							false, // K, k
+							false, // L, l
+							false, // M, m
+							false, // N, n
+							false, // O, o
+							false, // P, p
+							false, // Q, q
+							false, // R, r
+							false, // S, s
+							false, // T, t
+							false, // U, u
+							false, // V, v
+							false, // X, x
+							false, // Y, y
+							false, // Z, z
+};
+#else
+#error("No parsing method for escape character");
+#endif
 
 int GetUserInput_Interger(void);
 char GetUserInput_Char(void);
 void InitializeBufferFromUserInput(void);
+bool UserWantsToExit(char cInput);
+bool IsBufferInitialized(void);
 
 int main(void)
 {
@@ -16,10 +55,9 @@ int main(void)
 	printf("Circular buffer demo\r\n");
 
 	char cUserInput = 0;
-	while(cUserInput != 'E' &&   cUserInput != 'e')
+	while( !UserWantsToExit(cUserInput) )
 	{
-
-		if(Buffer.piData == 0)
+		if(IsBufferInitialized() == false)
 		{
 			InitializeBufferFromUserInput();
 			continue;
@@ -58,6 +96,35 @@ int main(void)
 	return 0;
 }
 
+bool UserWantsToExit(char cInput)
+{
+#if (ESCAPE_CHARACTER_PARSING_METHOD == PARSING_DEFAULT)
+	char * pcEscapeLetter = cEscapeLetters;
+	while(*pcEscapeLetter != 0)
+	{
+		if(*pcEscapeLetter == cInput)
+		{
+			return true;
+		}
+		pcEscapeLetter++;
+	}
+#elif (ESCAPE_CHARACTER_PARSING_METHOD == PARSING_HASHMAP)
+	if(cInput >= 'a' && cInput <= 'z')
+	{
+		return bEscapeLetters[cInput - 'a'];
+	}
+	else if(cInput >= 'A' && cInput <= 'Z')
+	{
+		return bEscapeLetters[cInput - 'A'];
+	}
+#endif
+	return false;
+}
+
+bool IsBufferInitialized(void)
+{
+	return Buffer.piData != 0;
+}
 
 int GetUserInput_Interger(void)
 {
