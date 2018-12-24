@@ -43,11 +43,8 @@ int main(void)
 			Pop(&Buffer);
 		}
 			break;
-		case 'E':
-		case 'e':
-			break;
 		default:
-			printf("You enter [ %c ], not sure what it means\r\n", cUserInput);
+			printf("You entered \"%c\"\r\n", (int)cUserInput);
 			break;
 		}
 	}
@@ -79,11 +76,12 @@ char GetUserInput_Char(void)
 	sscanf(line, "%c", &answer);
 	return answer;
 }
+
 void InitializeBufferFromUserInput(void)
 {
 	printf("Enter the capacity of the buffer: ");
 	int iCapacity = GetUserInput_Interger();
-	if( iCapacity < 0 )
+	if( iCapacity <= 0 )
 	{
 		printf("Invalid parameter! \r\n");
 	}
